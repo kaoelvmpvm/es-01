@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>"經"彩青春Yes－國小｜青春倡議徽章提示語產生器</title>
+  <style>
+    :root{
+      --paper:#f3ead8;
+      --ink:#252321;
+      --muted:#675f56;
+      --red:#c83e34;
+      --orange:#df7d2d;
+      --yellow:#e1b936;
+      --green:#87973c;
+      --blue:#4e91ad;
+      --deep-blue:#2f667b;
+      --cream:#fff9eb;
+      --shadow:10px 12px 0 rgba(43,35,27,.16);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--ink);
+      font-family:"Microsoft JhengHei","Noto Sans TC",Arial,sans-serif;
+      line-height:1.65;
+      background:
+        repeating-linear-gradient(0deg, rgba(63,50,36,.035) 0 1px, transparent 1px 5px),
+        repeating-linear-gradient(90deg, rgba(63,50,36,.025) 0 1px, transparent 1px 7px),
+        linear-gradient(135deg,#e9d8bd 0%,#f7efd9 48%,#d9e7df 100%);
+      overflow-x:hidden;
+    }
+
+    body::before,
+    body::after{
+      content:"";
+      position:fixed;
+      z-index:-1;
+      opacity:.22;
+      border:5px solid var(--ink);
+      transform:rotate(-8deg);
+    }
+    body::before{
+      width:210px;height:210px;border-radius:46% 54% 42% 58%;
+      left:-70px;top:80px;background:var(--yellow);
+    }
+    body::after{
+      width:190px;height:250px;border-radius:58% 42% 50% 50%;
+      right:-75px;bottom:60px;background:var(--blue);
+      transform:rotate(11deg);
+    }
+
+    .wrap{
+      width:min(1120px,calc(100% - 28px));
+      margin:24px auto 42px;
+      position:relative;
+    }
+
+    header{
+      position:relative;
+      padding:28px 28px 24px;
+      margin-bottom:18px;
+      border:4px solid var(--ink);
+      border-radius:24px 19px 27px 17px;
+      background:
+        radial-gradient(circle at 18% 24%, rgba(255,255,255,.7) 0 5%, transparent 6%),
+        linear-gradient(120deg,#f1ca3e 0 31%,#ec8450 31% 60%,#61a6bd 60%);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      transform:rotate(-.2deg);
+    }
+    header::before{
+      content:"×";
+      position:absolute;
+      right:26px;
+      top:8px;
+      font-size:72px;
+      font-weight:900;
+      line-height:1;
+      color:rgba(255,255,255,.78);
+      transform:rotate(12deg);
+    }
+    header::after{
+      content:"";
+      position:absolute;
+      width:150px;height:24px;
+      right:82px;bottom:12px;
+      background:rgba(232,244,255,.7);
+      border:2px dashed rgba(39,45,49,.6);
+      transform:rotate(-6deg);
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:5px 12px;
+      background:var(--cream);
+      border:3px solid var(--ink);
+      border-radius:10px 14px 9px 13px;
+      font-weight:900;
+      transform:rotate(-1.5deg);
+      box-shadow:4px 5px 0 rgba(36,32,28,.15);
+    }
+    h1{
+      margin:14px 0 4px;
+      font-size:clamp(1.9rem,4.5vw,2.8rem);
+      line-height:1.2;
+      letter-spacing:.04em;
+      text-shadow:2px 2px 0 rgba(255,255,255,.55);
+    }
+    .subtitle{
+      margin:0;
+      max-width:860px;
+      font-weight:800;
+      color:#2f3d43;
+    }
+
+    .progress{
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:8px;
+      margin:18px 0;
+    }
+    .step-pill{
+      padding:10px 6px;
+      text-align:center;
+      background:#f7f0df;
+      border:3px solid var(--ink);
+      border-radius:9px 13px 8px 14px;
+      font-size:.88rem;
+      font-weight:800;
+      color:#5c5147;
+      box-shadow:4px 5px 0 rgba(43,35,27,.12);
+    }
+    .step-pill:nth-child(even){transform:rotate(.6deg)}
+    .step-pill:nth-child(odd){transform:rotate(-.5deg)}
+    .step-pill.active{
+      background:var(--red);
+      color:#fff;
+      transform:translateY(-3px) rotate(-1deg);
+    }
+
+    .card{
+      display:none;
+      padding:24px;
+      background:
+        repeating-linear-gradient(0deg, rgba(51,40,30,.028) 0 1px, transparent 1px 5px),
+        rgba(255,249,235,.94);
+      border:4px solid var(--ink);
+      border-radius:20px 15px 24px 17px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .card.active{display:block;animation:paperIn .22s ease}
+    @keyframes paperIn{
+      from{opacity:0;transform:translateY(8px) rotate(.4deg)}
+      to{opacity:1;transform:translateY(0) rotate(0)}
+    }
+    .card::after{
+      content:"";
+      position:absolute;
+      width:78px;height:22px;
+      right:24px;top:14px;
+      background:rgba(126,174,204,.36);
+      border:2px dashed rgba(38,50,58,.45);
+      transform:rotate(7deg);
+      pointer-events:none;
+    }
+
+    h2{
+      margin:0 0 8px;
+      font-size:1.5rem;
+      line-height:1.3;
+    }
+    .hint{margin:0 0 16px;color:var(--muted);font-weight:700}
+
+    .wordwall-stage{display:grid;gap:18px}
+    .game-frame{
+      padding:14px;
+      background:#d9d0bd;
+      border:4px solid var(--ink);
+      border-radius:14px 20px 16px 11px;
+      box-shadow:7px 8px 0 rgba(43,35,27,.16);
+      position:relative;
+    }
+    .game-frame::before,
+    .game-frame::after{
+      content:"";
+      position:absolute;
+      width:76px;height:18px;
+      background:rgba(246,225,145,.78);
+      border:1px dashed rgba(40,36,31,.55);
+      top:-8px;
+    }
+    .game-frame::before{left:28px;transform:rotate(-5deg)}
+    .game-frame::after{right:34px;transform:rotate(6deg)}
+    .wordwall-wrap{
+      display:flex;
+      justify-content:center;
+      width:100%;
+      overflow:hidden;
+      border-radius:8px;
+      background:#fff;
+    }
+    .wordwall-wrap iframe{
+      width:100%;
+      max-width:960px !important;
+      min-height:420px;
+      border:0;
+    }
+
+    .gate{
+      padding:18px;
+      border:4px solid var(--ink);
+      border-radius:14px 18px 12px 20px;
+      background:
+        linear-gradient(90deg,rgba(232,113,88,.18),rgba(246,220,105,.22)),
+        #fff7e5;
+      box-shadow:6px 7px 0 rgba(43,35,27,.12);
+    }
+    .gate-row{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:10px;
+      align-items:end;
+    }
+
+    label{display:block;font-weight:900;margin-bottom:6px}
+    input[type="number"], input[type="text"]{
+      width:100%;
+      padding:13px 14px;
+      border:3px solid var(--ink);
+      border-radius:10px 14px 10px 13px;
+      font:inherit;
+      font-weight:800;
+      background:#fffdf5;
+    }
+    input:focus, textarea:focus{
+      outline:none;
+      box-shadow:0 0 0 4px rgba(78,145,173,.18);
+    }
+
+    .gate-msg{
+      margin:12px 0 0;
+      font-weight:900;
+      min-height:1.5em;
+    }
+    .gate-msg.ok{color:#315d35}
+    .gate-msg.no{color:#a62d28}
+
+    .intro-panel{
+      padding:24px;
+      border:4px solid var(--ink);
+      border-radius:18px 15px 23px 14px;
+      background:
+        linear-gradient(145deg, rgba(207,229,235,.9) 0 33%, rgba(255,240,197,.92) 33% 65%, rgba(229,193,178,.92) 65%),
+        #fbf4df;
+      box-shadow:7px 8px 0 rgba(43,35,27,.14);
+      position:relative;
+      overflow:hidden;
+    }
+    .intro-panel::before{
+      content:"";
+      position:absolute;
+      inset:12px;
+      border:2px dashed rgba(45,45,42,.42);
+      border-radius:13px 11px 16px 10px;
+      pointer-events:none;
+    }
+    .intro-title{
+      display:inline-block;
+      padding:6px 12px;
+      border:3px solid var(--ink);
+      background:#fff9eb;
+      border-radius:10px 14px 9px 13px;
+      font-weight:900;
+      margin-bottom:10px;
+      position:relative;
+    }
+    .intro-copy{position:relative;font-weight:800;font-size:1.05rem;max-width:950px}
+    .mission-grid{
+      position:relative;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-top:22px;
+    }
+    .mission-card{
+      padding:18px 12px;
+      text-align:center;
+      border:3px solid var(--ink);
+      background:rgba(255,255,255,.75);
+      border-radius:16px 18px 13px 16px;
+      box-shadow:5px 6px 0 rgba(43,35,27,.12);
+      font-weight:900;
+      font-size:1.12rem;
+    }
+
+    .options{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+    .option{
+      width:100%;
+      padding:15px 16px;
+      text-align:left;
+      cursor:pointer;
+      border:3px solid var(--ink);
+      border-radius:11px 16px 10px 15px;
+      background:#fffaf0;
+      color:var(--ink);
+      font:inherit;
+      box-shadow:5px 6px 0 rgba(43,35,27,.12);
+      transition:.15s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .option:nth-child(4n+1){background:#f4d64b}
+    .option:nth-child(4n+2){background:#d97b54}
+    .option:nth-child(4n+3){background:#86a84b}
+    .option:nth-child(4n+4){background:#7eb1c6}
+    .option:hover,.option.selected{transform:translateY(-3px) rotate(-.5deg);box-shadow:8px 9px 0 rgba(43,35,27,.17)}
+    .option.selected::after{
+      content:"✓";
+      position:absolute;
+      right:12px;top:4px;
+      font-size:2rem;
+      font-weight:900;
+      color:#fff;
+      text-shadow:2px 2px 0 var(--ink);
+      transform:rotate(8deg);
+    }
+    .option strong{display:block;font-size:1.04rem}
+    .option span{display:block;margin-top:4px;font-size:.92rem;color:#4d4943;font-weight:700}
+
+
+    #page3 .options .option,
+    #page4 .options .option{
+      min-height:62px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    #page3 .option strong,
+    #page4 .option strong{font-size:1.08rem}
+    #page4 .option span{font-size:.94rem;line-height:1.45}
+
+    .custom-zone{
+      margin-top:18px;
+      padding:18px;
+      border:4px dashed var(--ink);
+      border-radius:16px 20px 14px 19px;
+      background:#dce9e9;
+      box-shadow:6px 7px 0 rgba(43,35,27,.11);
+    }
+    .custom-zone.active{
+      background:#cfe7c9;
+    }
+    .custom-zone h3{
+      margin:0 0 8px;
+      font-size:1.18rem;
+    }
+    .custom-zone p{margin:0 0 12px;font-weight:700;color:#4c514b}
+    .custom-actions{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      align-items:end;
+    }
+    .custom-status{margin-top:10px;font-weight:900;min-height:1.5em}
+
+    .summary{
+      display:grid;
+      gap:10px;
+      padding:16px;
+      border:3px solid var(--ink);
+      background:#f7ecd2;
+      border-radius:12px 18px 12px 16px;
+    }
+    .summary-row{
+      display:grid;
+      grid-template-columns:130px 1fr;
+      gap:10px;
+      align-items:start;
+    }
+    .summary-row b{color:#7b2f2a}
+
+    textarea{
+      width:100%;
+      min-height:430px;
+      padding:14px;
+      resize:vertical;
+      border:3px solid var(--ink);
+      border-radius:12px;
+      background:#fffdf7;
+      color:#2b2a27;
+      font:inherit;
+      white-space:pre-wrap;
+    }
+
+    .password{
+      margin:14px 0;
+      padding:12px 14px;
+      border:3px solid var(--ink);
+      border-radius:12px 16px 10px 14px;
+      background:#f5ce4f;
+      font-size:1.15rem;
+      font-weight:900;
+      box-shadow:5px 6px 0 rgba(43,35,27,.12);
+      transform:rotate(-.3deg);
+    }
+
+    .tips-box{
+      margin-top:14px;
+      padding:14px 16px;
+      border:3px dashed var(--ink);
+      border-radius:10px 15px 11px 14px;
+      background:#dce9e9;
+      font-weight:700;
+    }
+
+    .nav{
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:20px;
+    }
+    .btn{
+      border:3px solid var(--ink);
+      border-radius:10px 14px 9px 15px;
+      padding:11px 17px;
+      cursor:pointer;
+      font:inherit;
+      font-weight:900;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--ink);
+      box-shadow:5px 6px 0 rgba(43,35,27,.14);
+      transition:.15s ease;
+      background:#fffef8;
+    }
+    .btn:hover{transform:translateY(-2px) rotate(-.5deg)}
+    .btn.primary{background:var(--red);color:#fff}
+    .btn.secondary{background:#f7efd9}
+    .btn.link{background:var(--blue);color:#fff}
+    .btn:disabled{opacity:.38;cursor:not-allowed;transform:none;box-shadow:none}
+
+    .copy-status{margin-left:8px;font-weight:900;color:#315d35}
+
+    .instruction-box{
+      margin:10px 0 16px;
+      padding:16px 18px;
+      border:3px solid var(--ink);
+      border-radius:14px 18px 13px 17px;
+      background:#fffaf0;
+      box-shadow:5px 6px 0 rgba(43,35,27,.10);
+    }
+    .instruction-box p{margin:4px 0;font-weight:750}
+    .instruction-box p:first-child{margin-bottom:10px;font-size:1.04rem}
+    .platform-links{
+      display:flex;
+      gap:12px;
+      justify-content:flex-end;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .action-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .btn.gpt{background:#252321;color:#fff}
+    .final-actions{margin-top:18px}
+
+    /* 生動但不干擾閱讀的動態效果 */
+    @keyframes headerGlow{
+      0%,100%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+    }
+    @keyframes softFloat{
+      0%,100%{transform:translateY(0) rotate(var(--rot,0deg))}
+      50%{transform:translateY(-5px) rotate(var(--rot,0deg))}
+    }
+    @keyframes gentlePulse{
+      0%,100%{box-shadow:4px 5px 0 rgba(43,35,27,.12)}
+      50%{box-shadow:6px 8px 0 rgba(43,35,27,.18),0 0 0 4px rgba(200,62,52,.10)}
+    }
+    @keyframes driftA{
+      0%,100%{transform:translate(0,0) rotate(-8deg)}
+      50%{transform:translate(10px,-10px) rotate(-3deg)}
+    }
+    @keyframes driftB{
+      0%,100%{transform:translate(0,0) rotate(11deg)}
+      50%{transform:translate(-12px,8px) rotate(6deg)}
+    }
+    @keyframes cardPop{
+      0%{opacity:0;transform:translateY(14px) scale(.985)}
+      70%{opacity:1;transform:translateY(-2px) scale(1.005)}
+      100%{opacity:1;transform:translateY(0) scale(1)}
+    }
+
+    header{
+      background-size:180% 180%;
+      animation:headerGlow 10s ease-in-out infinite;
+    }
+    body::before{animation:driftA 9s ease-in-out infinite}
+    body::after{animation:driftB 11s ease-in-out infinite}
+    .card.active{animation:cardPop .38s cubic-bezier(.2,.8,.2,1)}
+    .step-pill.active{animation:gentlePulse 2.4s ease-in-out infinite}
+    .mission-card:nth-child(1){--rot:-.3deg;animation:softFloat 3.6s ease-in-out infinite}
+    .mission-card:nth-child(2){--rot:.3deg;animation:softFloat 4.1s ease-in-out .25s infinite}
+    .mission-card:nth-child(3){--rot:-.2deg;animation:softFloat 3.9s ease-in-out .5s infinite}
+    .game-frame,.wordwall-wrap,.wordwall-wrap iframe{animation:none !important;transform:none !important}
+    .option,.btn,.mission-card{will-change:transform}
+    .option:hover{transform:translateY(-5px) rotate(-.7deg) scale(1.01)}
+    .btn:active{transform:translateY(1px) scale(.98);box-shadow:2px 3px 0 rgba(43,35,27,.12)}
+    .custom-zone.active{animation:gentlePulse 2.8s ease-in-out infinite}
+
+    @media (prefers-reduced-motion: reduce){
+      *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+    }
+
+    @media(max-width:980px){
+      .progress{grid-template-columns:repeat(3,1fr)}
+      .mission-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:850px){
+      .options{grid-template-columns:1fr}
+    }
+    @media(max-width:720px){
+      .gate-row{grid-template-columns:1fr}
+      .custom-actions{grid-template-columns:1fr}
+      .summary-row{grid-template-columns:1fr}
+    }
+    @media(max-width:620px){
+      .wrap{width:min(100%,calc(100% - 16px));margin:12px auto 26px}
+      header,.card{padding:18px}
+      .progress{grid-template-columns:repeat(2,1fr)}
+      .wordwall-wrap iframe{min-height:380px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">月經教育 × 概念深化</div>
+      <h1>"經"彩青春Yes－國小</h1>
+      <p class="subtitle">完成「價值選擇」、「表達立場」、「健康倡議」學習任務。</p>
+    </header>
+
+    <div class="progress" aria-label="流程進度">
+      <div class="step-pill active" id="pill1">1.價值選擇</div>
+      <div class="step-pill" id="pill2">2.表達立場</div>
+      <div class="step-pill" id="pill3">2-1徽章標語</div>
+      <div class="step-pill" id="pill4">2-2徽章形式</div>
+      <div class="step-pill" id="pill5">2-3徽章內容</div>
+      <div class="step-pill" id="pill6">3.健康倡議</div>
+    </div>
+
+    <section class="card active" id="page1">
+      <h2>第一關：挑戰「經彩青春GO」Wordwall 遊戲</h2>
+      <p class="hint">點選「開始」，進行遊戲，時限 5 分鐘，錯誤機會 3 次。遊戲結束，將「得分」填入下方欄位，檢核是否通關。</p>
+
+      <div class="wordwall-stage">
+        <div class="game-frame">
+          <div class="wordwall-wrap">
+            <iframe style="max-width:100%" src="https://wordwall.net/tc/embed/ecf04077ef4e4fb4996b128983337316?themeId=49&templateId=82&fontStackId=21" width="500" height="380" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div class="gate">
+          <div class="gate-row">
+            <div>
+              <label for="gameScore">填入你的「得分」數字，點選「檢核通關」。</label>
+              <input id="gameScore" type="number" inputmode="numeric" min="0" step="1" placeholder="請輸入遊戲結束時顯示的得分" />
+            </div>
+            <button class="btn primary" type="button" onclick="checkGameScore()">檢核通關</button>
+            <button class="btn secondary" type="button" onclick="window.location.reload()">重新開始</button>
+          </div>
+          <p class="gate-msg" id="gateMsg"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="page2">
+      <div class="intro-panel">
+        <div class="intro-title">第二關：表達立場—健康正向的觀念與態度</div>
+        <p class="intro-copy">這個關站共有 3 項任務，引領你將最珍視的月經觀念與態度，轉化成徽章標語。準備好了嗎？點選「開始製作」。</p>
+        <div class="mission-grid">
+          <div class="mission-card">1. 最認同的概念</div>
+          <div class="mission-card">2. 最喜歡的風格</div>
+          <div class="mission-card">3. 最獨特的觀點</div>
+        </div>
+      </div>
+      <div class="nav">
+        <button class="btn secondary" onclick="showPage(1)">回到第一關</button>
+        <button class="btn primary" onclick="showPage(3)">開始製作</button>
+      </div>
+    </section>
+
+    <section class="card" id="page3">
+      <h2>【任務1】徽章標語－最認同的概念</h2>
+      <p class="hint">P1-P9是「經彩青春GO」Wordwall遊戲中提到的健康觀念與態度，哪一句是你覺得最重要的呢？挑選作為徽章標語（也可以自訂）後，點選「下一步：任務2」。</p>
+      <div class="options" id="sloganOptions"></div>
+
+      <div class="custom-zone" id="customZone">
+        <h3>自訂區</h3>
+        <p>如果你想用自己的話表達月經教育觀點，可以在這裡輸入一句標語，再點選「使用自訂標語」。</p>
+        <div class="custom-actions">
+          <div>
+            <label for="customSloganInput">自訂徽章標語</label>
+            <input id="customSloganInput" type="text" maxlength="28" placeholder="輸入你想放在徽章下端的標語" />
+          </div>
+          <button class="btn primary" type="button" onclick="useCustomSlogan()">使用自訂標語</button>
+        </div>
+        <div class="custom-status" id="customStatus"></div>
+      </div>
+
+      <div class="nav">
+        <button class="btn secondary" onclick="showPage(2)">上一步</button>
+        <button class="btn primary" id="next3" onclick="goToStyle()" disabled>下一步：任務2</button>
+      </div>
+    </section>
+
+    <section class="card" id="page4">
+      <h2>【任務2】徽章形式－最喜歡的風格</h2>
+      <p class="hint">以下有S1-S6不同視覺風格，根據設計說明，選定你最喜歡的風格類型後，點選「下一步：任務3」。</p>
+      <div class="options" id="styleOptions"></div>
+      <div class="nav">
+        <button class="btn secondary" onclick="showPage(3)">上一步</button>
+        <button class="btn primary" id="next4" onclick="goToConfirm()" disabled>下一步：任務3</button>
+      </div>
+    </section>
+
+    <section class="card" id="page5">
+      <h2>【任務3】徽章內容－最獨特的觀點</h2>
+      <p class="hint">檢視以下主題、標語、形式，確認無誤後，點選「下一關：健康倡議」。</p>
+      <div class="summary">
+        <div class="summary-row"><b>主題</b><span>"經"彩青春Yes</span></div>
+        <div class="summary-row"><b>徽章標語</b><span id="confirmSlogan"></span></div>
+        <div class="summary-row"><b>徽章形式</b><span id="confirmStyle"></span></div>
+      </div>
+      <div class="nav">
+        <button class="btn secondary" onclick="showPage(4)">上一步</button>
+        <button class="btn primary" onclick="goToResult()">下一關：健康倡議</button>
+      </div>
+    </section>
+
+    <section class="card" id="page6">
+      <h2>第三關：健康倡議－徽章生成提示語</h2>
+
+      <div class="instruction-box">
+        <p><strong>由系統自動生成以下「提示語」，以及獲得「經彩青春Yes密碼」。</strong></p>
+        <p>步驟1：點選「一鍵複製提示語」</p>
+        <p>步驟2：點選「開啟Gemini」或「開啟GPT」</p>
+        <p>步驟3：在「Gemini或GPT」網頁登入帳號 → 上傳照片 → 貼上「提示語」 → 按提交鍵（↑）</p>
+      </div>
+
+      <div class="password">經彩青春Yes密碼：5277（我愛經期／驚奇）</div>
+
+      <label for="promptOutput">圖片生成提示語</label>
+      <textarea id="promptOutput" readonly></textarea>
+
+      <div class="nav final-actions">
+        <button class="btn secondary" onclick="showPage(5)">上一步</button>
+        <div class="action-group">
+          <button class="btn primary" onclick="copyPrompt()">一鍵複製提示語</button>
+          <span class="copy-status" id="copyStatus"></span>
+        </div>
+      </div>
+      <div class="platform-links">
+        <a class="btn link" href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">開啟Gemini</a>
+        <a class="btn gpt" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">開啟GPT</a>
+        <button class="btn secondary" onclick="window.location.reload()">重新開始</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const topic = {
+      displayTitle: '"經"彩青春Yes－國小',
+      badgeTitle: '經彩青春GO',
+      axis: '理解月經是自然的生理現象，以尊重、悅納、同理與正確保健知識面對月經與性別差異。',
+      passScore: 9,
+      slogans: [
+        '性別差異我尊重',
+        '月經不適我同理',
+        '自然生理我悅納',
+        '經期保健問師長',
+        '生理用品勤更換',
+        '適度運動身心佳',
+        '迎接成長有自信',
+        '月經知識多學習',
+        '選用適合衛生棉'
+      ]
+    };
+
+    const styles = {
+      S1: {
+        name:'怪誕拼貼卡牌風',
+        desc:'大眼人物、粗糙紙材、手縫邊框與鮮明色塊，最接近本活動主視覺。',
+        prompt:'怪誕童趣的手繪拼貼卡牌風。人物有誇張大眼與略不對稱五官，使用粗糙鉛筆線、蠟筆感、舊紙拼貼、手縫線、補丁與紙膠帶 X 記號；背景以紅、橘、黃、草綠、湖水藍等鮮明色塊與幾何圖樣構成，整體刻意保留手作與不完美感。'
+      },
+      S2: {
+        name:'清新日系手帳插畫風',
+        desc:'柔和奶油色與貼紙手帳感，清新可愛又有青春感。',
+        prompt:'清新日系手帳插畫風。以奶油白、淡粉、薄荷綠、天空藍與奶黃色為主色，人物線條圓潤自然，搭配小花、愛心、星星、紙膠帶、貼紙與手帳裝飾元素，整體乾淨明亮、溫柔可愛。'
+      },
+      S3: {
+        name:'情緒角色卡風',
+        desc:'強化人物表情與姿勢，用背景圖形把感受直接畫出來。',
+        prompt:'像情緒教育角色卡。以誇張眼神、嘴型、眉毛與肢體動作清楚呈現情緒，背景使用旋渦、放射線、方格、圓點與不規則幾何圖形呼應角色狀態，保留手繪粗線與拼貼紙張質地。'
+      },
+      S4: {
+        name:'柔和水彩繪本風',
+        desc:'像溫暖繪本般的淡彩暈染效果，柔和又親近。',
+        prompt:'柔和水彩繪本風。畫面具有水彩紙質感與淡彩暈染，色彩以淡粉、淺藍、米白、淺綠與暖黃色為主；人物自然可愛、表情友善，整體像一本溫暖的青春健康教育繪本。'
+      },
+      S5: {
+        name:'復古漫畫拼貼風',
+        desc:'較強烈的黑色線稿與復古印刷感，適合有態度的倡議。',
+        prompt:'復古漫畫與混合媒材拼貼風，黑色粗線、交叉陰影、褪色紙張、網點與手工印刷痕跡明顯；人物表情誇張但友善，色塊以紅、橘、黃、藍綠為主。'
+      },
+      S6: {
+        name:'清新校園漫畫風',
+        desc:'明亮自然、像校園青春插畫，國小生容易親近。',
+        prompt:'清新校園漫畫風。人物造型自然青春、表情真誠明亮，以淡藍、奶黃、粉橘、淺綠等輕盈色彩呈現，搭配校園、筆記、對話框等元素，整體乾淨、友善、可愛又不幼稚。'
+      }
+    };
+
+    const state = {
+      gamePassed:false,
+      slogan:'',
+      styleKey:'',
+      customSlogan:''
+    };
+
+    function makeOption({title,desc,onClick,selected}){
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='option'+(selected?' selected':'');
+      btn.innerHTML=`<strong>${title}</strong>${desc?`<span>${desc}</span>`:''}`;
+      btn.addEventListener('click',onClick);
+      return btn;
+    }
+
+    function renderSlogans(){
+      const box=document.getElementById('sloganOptions');
+      box.innerHTML='';
+      topic.slogans.forEach((slogan,index)=>{
+        box.appendChild(makeOption({
+          title:`P${index+1}｜${slogan}`,
+          desc:'',
+          selected:state.slogan===slogan,
+          onClick:()=>{
+            state.slogan=slogan;
+            document.getElementById('next3').disabled=false;
+            document.getElementById('customStatus').textContent='';
+            document.getElementById('customZone').classList.remove('active');
+            renderSlogans();
+          }
+        }));
+      });
+      if(!topic.slogans.includes(state.slogan) && state.slogan.trim()!==''){
+        document.getElementById('customZone').classList.add('active');
+        document.getElementById('customStatus').textContent=`目前使用自訂標語：${state.slogan}`;
+      }
+    }
+
+    function useCustomSlogan(){
+      const input=document.getElementById('customSloganInput');
+      const status=document.getElementById('customStatus');
+      const text=input.value.trim();
+      if(text===''){
+        status.textContent='請先輸入自訂標語。';
+        document.getElementById('customZone').classList.remove('active');
+        return;
+      }
+      state.slogan=text;
+      state.customSlogan=text;
+      document.getElementById('customZone').classList.add('active');
+      status.textContent=`已套用自訂標語：${text}`;
+      document.getElementById('next3').disabled=false;
+      renderSlogans();
+    }
+
+    function renderStyles(){
+      const box=document.getElementById('styleOptions');
+      box.innerHTML='';
+      Object.entries(styles).forEach(([key,style])=>{
+        box.appendChild(makeOption({
+          title:`${key}｜${style.name}`,
+          desc:style.desc,
+          selected:state.styleKey===key,
+          onClick:()=>{
+            state.styleKey=key;
+            document.getElementById('next4').disabled=false;
+            renderStyles();
+          }
+        }));
+      });
+    }
+
+    function showPage(n){
+      if(n>1 && !state.gamePassed){
+        showPage(1);
+        return;
+      }
+      for(let i=1;i<=6;i++){
+        document.getElementById(`page${i}`).classList.toggle('active',i===n);
+        document.getElementById(`pill${i}`).classList.toggle('active',i===n);
+      }
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    function checkGameScore(){
+      const input=document.getElementById('gameScore');
+      const msg=document.getElementById('gateMsg');
+      const score=Number(input.value);
+
+      msg.className='gate-msg';
+
+      if(input.value.trim()===''){
+        msg.textContent='請先輸入遊戲結束時看到的得分。';
+        msg.classList.add('no');
+        return;
+      }
+
+      if(score>=topic.passScore){
+        state.gamePassed=true;
+        msg.textContent='通關成功！可以進入下一關「表達立場」。';
+        msg.classList.add('ok');
+        setTimeout(()=>showPage(2),650);
+      }else{
+        state.gamePassed=false;
+        msg.textContent='得分「不符合」，通關失敗，點選「重新開始」，再挑戰遊戲。';
+        msg.classList.add('no');
+      }
+    }
+
+
+    function goToStyle(){
+      if(!state.slogan)return;
+      renderStyles();
+      showPage(4);
+    }
+
+    function goToConfirm(){
+      if(!state.styleKey)return;
+      const style=styles[state.styleKey];
+      document.getElementById('confirmSlogan').textContent=state.slogan;
+      document.getElementById('confirmStyle').textContent=`${style.name}：${style.desc}`;
+      showPage(5);
+    }
+
+    function goToResult(){
+      if(!state.styleKey||!state.slogan)return;
+      const style=styles[state.styleKey];
+      document.getElementById('promptOutput').value=buildPrompt(topic,state.slogan,style);
+      document.getElementById('copyStatus').textContent='';
+      showPage(6);
+    }
+
+    function buildPrompt(topic,slogan,style){
+      return `請根據我上傳的照片，生成一張完成度高、適合國小月經教育活動使用的「圓形青春倡議徽章」。
+
+【不可省略的硬性要求】
+1. 一定要清楚出現我上傳照片中的人像，並且讓照片中的人物成為整張圖的主體與視覺焦點。
+2. 不可以忽略、替換或弱化上傳照片中的人物；若我上傳的是單人照，就以該人物為主角；若我上傳的是多人照，請保留主要人物特徵並讓人物群像成為主體。
+3. 成品必須是「圓形徽章」構圖，不可做成方形海報、一般插畫或其他版型。
+4. 圓形徽章的上端必須清楚出現文字：「${topic.badgeTitle}」。
+5. 圓形徽章的下端必須清楚出現我選擇的標語：「${slogan}」。
+6. 文字一定要完整、正確、清楚可讀，不可改字、漏字，也不可用其他句子取代。
+
+【主題名稱】
+「${topic.badgeTitle}」
+
+【主題核心】
+${topic.axis}
+
+【整體視覺風格】
+請採用：「${style.name}」
+風格特徵：
+${style.prompt}
+
+【內容表現要求】
+1. 畫面要傳達尊重、悅納、同理、自信與正確保健的概念。
+2. 可以加入衛生棉、月曆、運動、水滴、愛心、星星、校園用品等象徵元素，但人物仍要是主體，不可喧賓奪主。
+3. 將月經呈現為自然的生理現象，不污名化、不嘲笑、不製造羞恥感。
+4. 不需要描繪寫實經血或私密身體部位。
+5. 不要成人化、性感化、暴露化。
+6. 不要加入恐嚇、獵奇、噁心或羞辱性的視覺元素。
+
+【徽章構圖要求】
+1. 使用圓形徽章構圖，人物位於中央並成為主視覺。
+2. 上端放置「${topic.badgeTitle}」，下端放置「${slogan}」，兩段文字都要清楚融入圓形徽章外圈或上、下緣設計。
+3. 保持人物、上端標語、下端標語與裝飾元素之間的層級清楚。
+4. 成品要有完整徽章感，適合成果展示或校園倡議使用。
+
+請生成一張友善、正向、人物清楚、文字正確、構圖完整的圓形青春倡議徽章圖片。`;
+    }
+
+    async function copyPrompt(){
+      const text=document.getElementById('promptOutput').value;
+      const status=document.getElementById('copyStatus');
+      try{
+        await navigator.clipboard.writeText(text);
+        status.textContent='已複製';
+      }catch(err){
+        const textarea=document.getElementById('promptOutput');
+        textarea.focus();
+        textarea.select();
+        document.execCommand('copy');
+        status.textContent='已複製';
+      }
+    }
+
+    function resetAll(){
+      state.gamePassed=false;
+      state.slogan='';
+      state.styleKey='';
+      state.customSlogan='';
+      document.getElementById('gameScore').value='';
+      document.getElementById('gateMsg').textContent='';
+      document.getElementById('gateMsg').className='gate-msg';
+      document.getElementById('customSloganInput').value='';
+      document.getElementById('customStatus').textContent='';
+      document.getElementById('customZone').classList.remove('active');
+      document.getElementById('next3').disabled=true;
+      document.getElementById('next4').disabled=true;
+      document.getElementById('copyStatus').textContent='';
+      document.getElementById('promptOutput').value='';
+      renderSlogans();
+      renderStyles();
+      showPage(1);
+    }
+
+    document.getElementById('gameScore').addEventListener('keydown',(e)=>{
+      if(e.key==='Enter')checkGameScore();
+    });
+    document.getElementById('customSloganInput').addEventListener('keydown',(e)=>{
+      if(e.key==='Enter')useCustomSlogan();
+    });
+
+    renderSlogans();
+    renderStyles();
+  </script>
+</body>
+</html>
